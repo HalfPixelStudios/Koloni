@@ -18,14 +18,13 @@ public class CameraController : MonoBehaviour
     {
         float mx = Input.GetAxis("Mouse X");
         float my = Input.GetAxis("Mouse Y");
-        print(transform.eulerAngles);
         if (Input.GetMouseButton(1))
         {
             //camera can get stuck
             
        
-            if ((inBounds(transform.eulerAngles.x, 270,360 )||inBounds(transform.eulerAngles.x, 0,90 ))
-                &&(inBounds(transform.eulerAngles.y,270,360))||inBounds(transform.eulerAngles.y,0,90))
+            if ((InBounds(transform.eulerAngles.x, 270,360 )||InBounds(transform.eulerAngles.x, 0,90 ))
+                &&(InBounds(transform.eulerAngles.y,270,360))||InBounds(transform.eulerAngles.y,0,90))
             {
                 transform.Rotate(my*rotateFactor,mx*rotateFactor,0);
                 

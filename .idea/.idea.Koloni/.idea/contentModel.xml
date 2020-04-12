@@ -9,9 +9,14 @@
             <e p="License.txt" t="Include" />
           </e>
         </e>
+        <e p="PlayerAI.cs" t="Include" />
         <e p="Scripts" t="Include">
           <e p="CameraController.cs" t="Include" />
           <e p="GlobalContainer.cs" t="Include" />
+          <e p="World" t="Include">
+            <e p="CubeMarch.cs" t="Include" />
+            <e p="Noise.cs" t="Include" />
+          </e>
         </e>
       </e>
       <e p="Koloni.sln" t="IncludeFlat" />

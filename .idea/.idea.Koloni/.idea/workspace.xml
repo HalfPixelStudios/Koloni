@@ -2,11 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b9416e10-c542-4778-bc9f-bbb373466326" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/GlobalContainer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/GlobalContainer.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/BasicScene.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/BasicScene/NavMesh.asset" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/BasicScene/NavMesh.asset.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Movement.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/PlayerAI.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scenes/BasicScene.unity" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scenes/BasicScene.unity.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Koloni/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Koloni/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Koloni/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Koloni/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/NithinScene.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/NithinScene.unity.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/CameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/CameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GlobalContainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GlobalContainer.cs" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,12 +28,16 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GlobalContainer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/CameraController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/PlayerAI.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Movement.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Assets/Scripts/GlobalContainer.cs" />
+        <option value="$PROJECT_DIR$/Assets/Movement.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/CameraController.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/GlobalContainer.cs" />
+        <option value="$PROJECT_DIR$/Assets/PlayerAI.cs" />
       </list>
     </option>
   </component>
@@ -84,7 +96,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1586722835189</updated>
-      <workItem from="1586722837675" duration="1776000" />
+      <workItem from="1586722837675" duration="4074000" />
     </task>
     <servers />
   </component>
