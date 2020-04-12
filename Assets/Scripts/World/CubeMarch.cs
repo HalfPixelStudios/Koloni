@@ -22,7 +22,7 @@ public class CubeMarch : MonoBehaviour {
 
         List<Vector3> verticies_raw = new List<Vector3>();
 
-        int lookup_index = System.Convert.ToInt32(activation, 2);
+        int lookup_index = System.Convert.ToInt32(Utils.ReverseString(activation), 2); //remember that binary is read backwards
 
         //Grab edge positions for triangle verticies
         int[] triangulation = new int[16];
