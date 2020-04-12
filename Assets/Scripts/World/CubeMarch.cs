@@ -5,14 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
 public class CubeMarch : MonoBehaviour {
 
-    public GameObject meshObject;
+    //public GameObject meshObject;
     public string activation;
 
-    Vector3[] cubepoints = new Vector3[] {
-        new Vector3(0,0,0),new Vector3(0,0,1),new Vector3(1,0,0),new Vector3(1,0,1),
-        new Vector3(0,1,0),new Vector3(0,1,1),new Vector3(1,1,0),new Vector3(1,1,1),
+    Vector3[] cubepoints = new Vector3[8] {
+        new Vector3(0,0,0),new Vector3(0,0,1),new Vector3(1,0,1),new Vector3(1,0,0),
+        new Vector3(0,1,0),new Vector3(0,1,1),new Vector3(1,1,1),new Vector3(1,1,0)
     };
 
+    public void Generate() {
+        RenderMesh(GenerateMesh());
+        
+    }
 
     public Mesh GenerateMesh() {
 
@@ -34,8 +38,10 @@ public class CubeMarch : MonoBehaviour {
             int vertB = Triangulation.cornerIndexBFromEdge[edgeInd];
 
             //find position of point
+            Debug.Log($"{cubepoints[vertA]} and {cubepoints[vertB]}");
             Vector3 point = (cubepoints[vertA] + cubepoints[vertB])/2;
             verticies_raw.Add(point);
+            Debug.Log(point);
         }
 
         Vector3[] verticies = verticies_raw.ToArray();
@@ -45,21 +51,27 @@ public class CubeMarch : MonoBehaviour {
         }
 
         Mesh mesh = new Mesh();
-        mesh.triangles = triangles;
         mesh.vertices = verticies;
+        mesh.triangles = triangles;
         mesh.RecalculateNormals();
 
         return mesh;
     }
 
-    public void RenderMesh() {
+    public void RenderMesh(Mesh mesh) {
+        MeshFilter meshFilter = GetComponent<MeshFilter>();
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+
+        meshFilter.sharedMesh = mesh;
 
     }
 
     
     
     private void OnDrawGizmos() {
+        Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(new Vector3(0.5f,0.5f,0.5f),new Vector3(1,1,1));
+        if (activation.Length != 8) { return; }
         for (int i = 0; i < 8; i++) {
             char c = activation[i];
             if (c == '1') {
@@ -68,7 +80,7 @@ public class CubeMarch : MonoBehaviour {
                 Gizmos.color = Color.black;
             }
 
-            Gizmos.DrawSphere(cubepoints[i],0.1f);
+            Gizmos.DrawSphere(cubepoints[i],0.05f);
         }
     }
 
