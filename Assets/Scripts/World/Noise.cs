@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class Noise  {
 
-    public static float[,,] GenerateNoiseMap(int seed, int chunkSize, Vector3 offset, float noiseScale, int octaves, float persistance, float lacunarity) {
+    public static float[,,] GenerateNoiseMap(int seed, int chunkSize, Vector3 offset, float noiseScale, float noiseWeight, int octaves, float persistance, float lacunarity) {
         System.Random prng = new System.Random(seed);
+
+        Vector3[] octaveOffsets = new Vector3[octaves];
+        for (int i = 0; i < octaves; i++) { //also offset each level of noise
+            octaveOffsets[i] = new Vector3(prng.Next(-100000,100000)+offset.x,prng.Next(-100000,100000)+offset.y,prng.Next(-100000,100000)+offset.z);
+        }
 
         float[,,] noiseMap = new float[chunkSize + 1, chunkSize + 1, chunkSize + 1];
 
@@ -21,20 +26,22 @@ public class Noise  {
                     float noise = 0;
 
                     for (int i = 0; i < octaves; i++) {
-                        float px = x / noiseScale * freq;
-                        float py = y / noiseScale * freq;
-                        float pz = z / noiseScale * freq;
+                        float px = x / noiseScale * freq + octaveOffsets[i].x;
+                        float py = y / noiseScale * freq + octaveOffsets[i].y;
+                        float pz = z / noiseScale * freq + octaveOffsets[i].z;
                         float perlinValue = Perlin3D(px, py, pz);
-                        noise += perlinValue;
+                        noise += perlinValue*amp;
 
                         //modify freq and amp per pass
                         amp *= persistance;
                         freq *= lacunarity;
                     }
-                    noiseMap[z, y, x] = noise;
+                    float finalNoise = y + noise * noiseWeight;
 
-                    if (noise < minNoise) { minNoise = noise; }
-                    if (noise > maxNoise) { maxNoise = noise; }
+                    noiseMap[z, y, x] = finalNoise;
+
+                    if (finalNoise < minNoise) { minNoise = finalNoise; }
+                    if (finalNoise > maxNoise) { maxNoise = finalNoise; }
 
                 }
             }

@@ -8,6 +8,7 @@ public class CubeMarch : MonoBehaviour {
     public int seed;
     public Vector3 offset;
     public float noiseScale;
+    public float noiseWeight;
     public int octaves;
     public float persistence;
     public float lacunarity;
@@ -34,7 +35,7 @@ public class CubeMarch : MonoBehaviour {
     public void Generate() {
 
         //Generate density map from noise 
-        density_map = Noise.GenerateNoiseMap(seed, chunkSize, offset, noiseScale, octaves, persistence, lacunarity);
+        density_map = Noise.GenerateNoiseMap(seed, chunkSize, offset, noiseScale, noiseWeight, octaves, persistence, lacunarity);
 
         RenderMesh(GenerateMesh());
         
@@ -135,7 +136,10 @@ public class CubeMarch : MonoBehaviour {
                 for (int i = 0; i < chunkSize + 1; i++) {
                     //Gizmos.color = new Color((float)i/(chunkSize+1),(float)j/(chunkSize+1),(float)k/(chunkSize+1));
                     Gizmos.color = Color.Lerp(new Color(0,0,0,0.5f), new Color(1f,1f,1f,0.5f), density_map[k,j,i]);
-                    Gizmos.DrawSphere(new Vector3(i,j,k),0.03f);
+
+                    if (density_map[k, j, i] < surface_level) {
+                        Gizmos.DrawSphere(new Vector3(i, j, k), 0.03f);
+                    }
                 }
             }
         }
