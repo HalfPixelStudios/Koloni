@@ -13,6 +13,9 @@ public class CubeMarch : MonoBehaviour {
     public float persistence;
     public float lacunarity;
 
+    public Gradient terrain_gradient;
+    public bool drawGizmo;
+
     [Range(1, 100)] public int chunkSize;
     [Range(0f, 1f)] public float surface_level;
     float[,,] density_map;
@@ -59,13 +62,31 @@ public class CubeMarch : MonoBehaviour {
 
         Vector3[] verticies = raw_verticies.ToArray();
         int[] triangles = new int[verticies.Length];
+        Color[] colors = new Color[verticies.Length];
+
+        float minHeight = float.MaxValue;
+        float maxHeight = float.MinValue;
         for (int i = 0; i < verticies.Length; i++) {
-            triangles[i] = i;
+            triangles[i] = i; //assign triangle data
+
+            //find min and maxheights
+            float height = verticies[i].y;
+
+            if (height < minHeight) { minHeight = height; }
+            if (height > maxHeight) { maxHeight = height; }
         }
+
+        //Color each vertex based on its y position
+        for (int i = 0; i < verticies.Length; i++) {
+            float height = verticies[i].y;
+            colors[i] = terrain_gradient.Evaluate(Mathf.InverseLerp(minHeight,maxHeight,height));
+        }
+
 
         Mesh mesh = new Mesh();
         mesh.vertices = verticies;
         mesh.triangles = triangles;
+        mesh.colors = colors;
         mesh.RecalculateNormals();
 
         return mesh;
@@ -129,7 +150,7 @@ public class CubeMarch : MonoBehaviour {
     
 
     private void OnDrawGizmos() {
-
+        if (!drawGizmo) { return; }
         if (density_map == null) { return;  }
         for (int k = 0; k < chunkSize + 1; k++) {
             for (int j = 0; j < chunkSize + 1; j++) {
