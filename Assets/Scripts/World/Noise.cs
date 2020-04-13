@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Noise  {
 
-    public static float[,,] GenerateNoiseMap(int seed, int chunkSize, Vector3 offset, float noiseScale, float noiseWeight, int octaves, float persistance, float lacunarity) {
+    public static float[,,] GenerateNoiseMap(int seed, int chunkSize, int chunkHeight, Vector3 offset, float noiseScale, float noiseWeight, int octaves, float persistance, float lacunarity) {
         System.Random prng = new System.Random(seed);
 
         Vector3[] octaveOffsets = new Vector3[octaves];
@@ -12,13 +12,13 @@ public class Noise  {
             octaveOffsets[i] = new Vector3(prng.Next(-100000,100000)+offset.x,prng.Next(-100000,100000)+offset.y,prng.Next(-100000,100000)+offset.z);
         }
 
-        float[,,] noiseMap = new float[chunkSize + 1, chunkSize + 1, chunkSize + 1];
+        float[,,] noiseMap = new float[chunkSize + 1, chunkHeight + 1, chunkSize + 1];
 
         float minNoise = float.MaxValue;
         float maxNoise = float.MinValue;
 
         for (int z = 0; z < chunkSize + 1; z++) {
-            for (int y = 0; y < chunkSize + 1; y++) {
+            for (int y = 0; y < chunkHeight + 1; y++) {
                 for (int x = 0; x < chunkSize + 1; x++) {
 
                     float amp = 1;
@@ -49,7 +49,7 @@ public class Noise  {
 
         //clamp all noise values so they are between 0 and 1
         for (int z = 0; z < chunkSize + 1; z++) {
-            for (int y = 0; y < chunkSize + 1; y++) {
+            for (int y = 0; y < chunkHeight + 1; y++) {
                 for (int x = 0; x < chunkSize + 1; x++) {
                     noiseMap[z, y, x] = Mathf.InverseLerp(minNoise,maxNoise,noiseMap[z,y,x]);
                 }

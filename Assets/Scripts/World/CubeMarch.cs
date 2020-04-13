@@ -17,6 +17,7 @@ public class CubeMarch : MonoBehaviour {
     public bool drawGizmo;
 
     [Range(1, 100)] public int chunkSize;
+    [Range(1, 100)] public int chunkHeight;
     [Range(0f, 1f)] public float surface_level;
     float[,,] density_map;
 
@@ -38,7 +39,7 @@ public class CubeMarch : MonoBehaviour {
     public void Generate() {
 
         //Generate density map from noise 
-        density_map = Noise.GenerateNoiseMap(seed, chunkSize, offset, noiseScale, noiseWeight, octaves, persistence, lacunarity);
+        density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, offset, noiseScale, noiseWeight, octaves, persistence, lacunarity);
 
         RenderMesh(GenerateMesh());
         
@@ -49,7 +50,7 @@ public class CubeMarch : MonoBehaviour {
 
         //for each cube
         for (int k = 0; k < chunkSize; k++) {
-            for (int j = 0; j < chunkSize; j++) {
+            for (int j = 0; j < chunkHeight; j++) {
                 for (int i = 0; i < chunkSize; i++) {
                     List<Vector3> sub_verts = NextCube(i, j, k);
 
@@ -98,6 +99,11 @@ public class CubeMarch : MonoBehaviour {
         List<Vector3> verticies = new List<Vector3>();
 
         int lookup_index = TriangulationLookup(x,y,z);
+
+        //if cube is in empty/full space, dont bother
+        if (lookup_index == 0 || lookup_index == 255) {
+            return verticies; 
+        }
 
         //Grab edge positions for triangle verticies
         int[] triangulation = new int[16];
@@ -148,7 +154,7 @@ public class CubeMarch : MonoBehaviour {
     
 
     
-
+    /*
     private void OnDrawGizmos() {
         if (!drawGizmo) { return; }
         if (density_map == null) { return;  }
@@ -165,6 +171,7 @@ public class CubeMarch : MonoBehaviour {
             }
         }
     }
+    */
 
 
 
