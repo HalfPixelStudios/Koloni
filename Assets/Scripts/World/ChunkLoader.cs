@@ -64,9 +64,7 @@ public class ChunkLoader : MonoBehaviour {
             Vector2 pos = grid_pos * chunkSize;
             bounds = new Bounds(pos, Vector2.one * chunkSize);
 
-
-            meshObject = Global.mapGenerator.GenerateChunk(grid_pos);
-
+            meshObject = Global.mapGenerator.GenerateChunk(pos);
             setVisible(false);
         }
 

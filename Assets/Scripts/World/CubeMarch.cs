@@ -5,7 +5,7 @@ using UnityEngine;
 public class CubeMarch : MonoBehaviour {
 
     public int seed;
-    //public Vector3 offset;
+    public Vector3 noiseOffset;
     public float noiseScale;
     public float noiseWeight;
     public int octaves;
@@ -33,9 +33,9 @@ public class CubeMarch : MonoBehaviour {
     }
 
 
-    public GameObject GenerateChunk(Vector2 grid_pos) {
+    public GameObject GenerateChunk(Vector2 pos) {
         //Generate density map from noise 
-        float[,,] density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, grid_pos*chunkSize, noiseScale, noiseWeight, octaves, persistence, lacunarity);
+        float[,,] density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, noiseOffset, pos, noiseScale, noiseWeight, octaves, persistence, lacunarity);
 
         //Create new Object
         GameObject meshObject = new GameObject();
@@ -45,17 +45,17 @@ public class CubeMarch : MonoBehaviour {
         MeshFilter meshFilter = meshObject.GetComponent<MeshFilter>();
         MeshRenderer meshRenderer = meshObject.GetComponent<MeshRenderer>();
 
-        Mesh mesh = GenerateMesh(density_map, grid_pos);
+        Mesh mesh = GenerateMesh(density_map);
         meshFilter.sharedMesh = mesh;
         meshRenderer.sharedMaterial = terrainMaterial;
 
-        meshObject.transform.position = new Vector3(grid_pos.x,0,grid_pos.y)*chunkSize;
+        meshObject.transform.position = new Vector3(pos.x,0,pos.y);
         
         return meshObject;
         
     }
 
-    public Mesh GenerateMesh(float[,,] density_map, Vector2 grid_pos) {
+    public Mesh GenerateMesh(float[,,] density_map) {
         List<Vector3> raw_verticies = new List<Vector3>();
 
         //for each cube

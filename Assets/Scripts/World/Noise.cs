@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Noise  {
 
-    public static float[,,] GenerateNoiseMap(int seed, int chunkSize, int chunkHeight, Vector3 offset, float noiseScale, float noiseWeight, int octaves, float persistance, float lacunarity) {
+    public static float[,,] GenerateNoiseMap(int seed, int chunkSize, int chunkHeight, Vector3 noiseOffset, Vector3 rawOffset, float noiseScale, float noiseWeight, int octaves, float persistance, float lacunarity) {
         System.Random prng = new System.Random(seed);
 
         Vector3[] octaveOffsets = new Vector3[octaves];
         for (int i = 0; i < octaves; i++) { //also offset each level of noise
-            octaveOffsets[i] = new Vector3(prng.Next(-100000,100000)+offset.x,prng.Next(-100000,100000)+offset.y,prng.Next(-100000,100000)+offset.z);
+            octaveOffsets[i] = new Vector3(prng.Next(-100000,100000)+noiseOffset.x,prng.Next(-100000,100000)+noiseOffset.y,prng.Next(-100000,100000)+noiseOffset.z);
         }
 
         float[,,] noiseMap = new float[chunkSize + 1, chunkHeight + 1, chunkSize + 1];
@@ -26,9 +26,9 @@ public class Noise  {
                     float noise = 0;
 
                     for (int i = 0; i < octaves; i++) {
-                        float px = x / noiseScale * freq + octaveOffsets[i].x;
-                        float py = y / noiseScale * freq + octaveOffsets[i].y;
-                        float pz = z / noiseScale * freq + octaveOffsets[i].z;
+                        float px = x / noiseScale * freq + octaveOffsets[i].x + rawOffset.x;
+                        float py = y / noiseScale * freq + octaveOffsets[i].y + rawOffset.y;
+                        float pz = z / noiseScale * freq + octaveOffsets[i].z + rawOffset.z;
                         float perlinValue = Perlin3D(px, py, pz);
                         noise += perlinValue*amp;
 
