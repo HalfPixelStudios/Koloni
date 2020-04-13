@@ -2,28 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
 public class CubeMarch : MonoBehaviour {
 
     public int seed;
-    public Vector3 offset;
+    //public Vector3 offset;
     public float noiseScale;
     public float noiseWeight;
     public int octaves;
     public float persistence;
     public float lacunarity;
 
+    public Material terrainMaterial;
     public Gradient terrain_gradient;
     public bool smooth_terrain;
-    public bool drawGizmo;
 
     [Range(1, 100)] public int chunkSize;
     [Range(1, 100)] public int chunkHeight;
     [Range(0f, 1f)] public float surface_level;
-    float[,,] density_map;
-
-    //public GameObject meshObject;
-    //public string activation;
 
     Vector3[] cubepoints = new Vector3[8] {
         new Vector3(0,0,0),new Vector3(0,0,1),new Vector3(1,0,1),new Vector3(1,0,0),
@@ -37,23 +32,37 @@ public class CubeMarch : MonoBehaviour {
         if (octaves < 0) { octaves = 0; }
     }
 
-    public void Generate() {
 
+    public GameObject GenerateChunk(Vector2 grid_pos) {
         //Generate density map from noise 
-        density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, offset, noiseScale, noiseWeight, octaves, persistence, lacunarity);
+        float[,,] density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, grid_pos*chunkSize, noiseScale, noiseWeight, octaves, persistence, lacunarity);
 
-        RenderMesh(GenerateMesh());
+        //Create new Object
+        GameObject meshObject = new GameObject();
+        meshObject.AddComponent<MeshFilter>();
+        meshObject.AddComponent<MeshRenderer>();
+
+        MeshFilter meshFilter = meshObject.GetComponent<MeshFilter>();
+        MeshRenderer meshRenderer = meshObject.GetComponent<MeshRenderer>();
+
+        Mesh mesh = GenerateMesh(density_map, grid_pos);
+        meshFilter.sharedMesh = mesh;
+        meshRenderer.sharedMaterial = terrainMaterial;
+
+        meshObject.transform.position = new Vector3(grid_pos.x,0,grid_pos.y)*chunkSize;
+        
+        return meshObject;
         
     }
 
-    public Mesh GenerateMesh() {
+    public Mesh GenerateMesh(float[,,] density_map, Vector2 grid_pos) {
         List<Vector3> raw_verticies = new List<Vector3>();
 
         //for each cube
         for (int k = 0; k < chunkSize; k++) {
             for (int j = 0; j < chunkHeight; j++) {
                 for (int i = 0; i < chunkSize; i++) {
-                    List<Vector3> sub_verts = NextCube(i, j, k);
+                    List<Vector3> sub_verts = NextCube(density_map, i, j, k);
 
                     foreach (Vector3 v in sub_verts) {
                         raw_verticies.Add(v);
@@ -95,7 +104,7 @@ public class CubeMarch : MonoBehaviour {
 
     }
 
-    public List<Vector3> NextCube(int x, int y, int z) {
+    public List<Vector3> NextCube(float[,,] density_map, int x, int y, int z) {
 
         List<Vector3> verticies = new List<Vector3>();
 
@@ -152,34 +161,6 @@ public class CubeMarch : MonoBehaviour {
         return verticies;
 
     }
-
-    public void RenderMesh(Mesh mesh) {
-        MeshFilter meshFilter = GetComponent<MeshFilter>();
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-
-        meshFilter.sharedMesh = mesh;
-
-    }
-    
-    
-    private void OnDrawGizmos() {
-        if (!drawGizmo) { return; }
-        if (density_map == null) { return;  }
-        for (int k = 0; k < chunkSize + 1; k++) {
-            for (int j = 0; j < chunkSize + 1; j++) {
-                for (int i = 0; i < chunkSize + 1; i++) {
-                    //Gizmos.color = new Color((float)i/(chunkSize+1),(float)j/(chunkSize+1),(float)k/(chunkSize+1));
-                    Gizmos.color = Color.Lerp(new Color(0,0,0,0.5f), new Color(1f,1f,1f,0.5f), density_map[k,j,i]);
-
-                    if (density_map[k, j, i] < surface_level) {
-                        Gizmos.DrawSphere(new Vector3(i, j, k), 0.03f);
-                    }
-                }
-            }
-        }
-    }
-    
-
 
 
 }
