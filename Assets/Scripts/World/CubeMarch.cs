@@ -103,7 +103,7 @@ public class CubeMarch : MonoBehaviour {
         float[] densities = new float[8];
         string bin = "";
         for (int i = 0; i < 8; i++) {
-            Vector3 vertex_pos = new Vector3(x + cubepoints[i].x, y + cubepoints[i].y, z + cubepoints[i].z);
+            Vector3 vertex_pos = new Vector3(x + cubepoints[i].x - chunkSize/2f, y + cubepoints[i].y, z + cubepoints[i].z - chunkSize / 2f);
 
             densities[i] = density_map[(int)vertex_pos.z, (int)vertex_pos.y, (int)vertex_pos.x];
 
