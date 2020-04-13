@@ -9,7 +9,9 @@ public class CubeMarchEditor : Editor {
     public override void OnInspectorGUI() {
         CubeMarch cm = (CubeMarch)target;
 
-        DrawDefaultInspector();
+        if(DrawDefaultInspector()) {
+            cm.Generate();
+        }
 
         if (GUILayout.Button("Generate")) {
             cm.Generate();
