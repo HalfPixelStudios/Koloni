@@ -5,7 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
 public class CubeMarch : MonoBehaviour {
 
-    [Range(0.0001f, 10f)] public float zoom;
+    public int seed;
+    public Vector3 offset;
+    public float noiseScale;
+    public int octaves;
+    public float persistence;
+    public float lacunarity;
 
     [Range(1, 100)] public int chunkSize;
     [Range(0f, 1f)] public float surface_level;
@@ -19,18 +24,17 @@ public class CubeMarch : MonoBehaviour {
         new Vector3(0,1,0),new Vector3(0,1,1),new Vector3(1,1,1),new Vector3(1,1,0)
     };
 
+    void OnValidate() { //called when one variable is changed
+        //clamp all values
+        if (noiseScale <= 0) { noiseScale = 0.0001f; }
+        if (lacunarity < 1) { lacunarity = 1; }
+        if (octaves < 0) { octaves = 0; }
+    }
+
     public void Generate() {
 
         //Generate density map from noise 
-        density_map = new float[chunkSize+1, chunkSize+1, chunkSize+1];
-        for (int k = 0; k < chunkSize+1; k++) {
-            for (int j = 0; j < chunkSize+1; j++) {
-                for (int i = 0; i < chunkSize+1; i++) {
-                    density_map[k,j,i] = Perlin3D(i/zoom,j/zoom,k/zoom);
-                }
-            }
-        }
-
+        density_map = Noise.GenerateNoiseMap(seed, chunkSize, offset, noiseScale, octaves, persistence, lacunarity);
 
         RenderMesh(GenerateMesh());
         
@@ -108,48 +112,21 @@ public class CubeMarch : MonoBehaviour {
         string bin = "";
 
         for (int i = 0; i < 8; i++) {
-            Vector3 vertex_pos = new Vector3(x+cubepoints[i].x,y+cubepoints[i].y,z+cubepoints[i].z);
+            Vector3 vertex_pos = new Vector3(x + cubepoints[i].x, y + cubepoints[i].y, z + cubepoints[i].z);
 
-            if (density_map[(int)vertex_pos.z,(int)vertex_pos.y,(int)vertex_pos.x] >= surface_level) {
-                bin = "1"+bin;
+            if (density_map[(int)vertex_pos.z, (int)vertex_pos.y, (int)vertex_pos.x] >= surface_level) {
+                bin = "1" + bin;
             } else {
-                bin = "0"+bin;
+                bin = "0" + bin;
             }
         }
 
         return System.Convert.ToInt32(bin, 2);
     }
+    
 
-    public float Perlin3D(float x, float y, float z) {
-        //from https://www.youtube.com/watch?v=Aga0TBJkchM
+    
 
-        float xy = Mathf.PerlinNoise(x, y);
-        float yz = Mathf.PerlinNoise(y, z);
-        float xz = Mathf.PerlinNoise(x, z);
-        float yx = Mathf.PerlinNoise(y, x);
-        float zy = Mathf.PerlinNoise(z, y);
-        float zx = Mathf.PerlinNoise(z, x);
-
-        return (xy + yz + xz + yx + zy + zx) / 6f;
-    }
-
-    /*
-    private void OnDrawGizmos() {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(new Vector3(0.5f,0.5f,0.5f),new Vector3(1,1,1));
-        if (activation.Length != 8) { return; }
-        for (int i = 0; i < 8; i++) {
-            char c = activation[i];
-            if (c == '1') {
-                Gizmos.color = Color.white;
-            } else {
-                Gizmos.color = Color.black;
-            }
-
-            Gizmos.DrawSphere(cubepoints[i],0.05f);
-        }
-    }
-    */
     private void OnDrawGizmos() {
 
         if (density_map == null) { return;  }
@@ -157,8 +134,8 @@ public class CubeMarch : MonoBehaviour {
             for (int j = 0; j < chunkSize + 1; j++) {
                 for (int i = 0; i < chunkSize + 1; i++) {
                     //Gizmos.color = new Color((float)i/(chunkSize+1),(float)j/(chunkSize+1),(float)k/(chunkSize+1));
-                    Gizmos.color = Color.Lerp(Color.black,Color.white,density_map[k,j,i]);
-                    Gizmos.DrawSphere(new Vector3(i,j,k),0.05f);
+                    Gizmos.color = Color.Lerp(new Color(0,0,0,0.5f), new Color(1f,1f,1f,0.5f), density_map[k,j,i]);
+                    Gizmos.DrawSphere(new Vector3(i,j,k),0.03f);
                 }
             }
         }
