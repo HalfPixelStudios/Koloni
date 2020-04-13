@@ -14,6 +14,7 @@ public class CubeMarch : MonoBehaviour {
     public float lacunarity;
 
     public Gradient terrain_gradient;
+    public bool smooth_terrain;
     public bool drawGizmo;
 
     [Range(1, 100)] public int chunkSize;
@@ -98,7 +99,22 @@ public class CubeMarch : MonoBehaviour {
 
         List<Vector3> verticies = new List<Vector3>();
 
-        int lookup_index = TriangulationLookup(x,y,z);
+        //find desnity values at all 8 edges
+        float[] densities = new float[8];
+        string bin = "";
+        for (int i = 0; i < 8; i++) {
+            Vector3 vertex_pos = new Vector3(x + cubepoints[i].x, y + cubepoints[i].y, z + cubepoints[i].z);
+
+            densities[i] = density_map[(int)vertex_pos.z, (int)vertex_pos.y, (int)vertex_pos.x];
+
+            if (densities[i] >= surface_level) {
+                bin = "1" + bin;
+            } else {
+                bin = "0" + bin;
+            }
+        }
+        
+        int lookup_index = System.Convert.ToInt32(bin, 2);
 
         //if cube is in empty/full space, dont bother
         if (lookup_index == 0 || lookup_index == 255) {
@@ -121,8 +137,17 @@ public class CubeMarch : MonoBehaviour {
             //find position of point
             Vector3 pointA = new Vector3(x + cubepoints[vertA].x, y + cubepoints[vertA].y, z + cubepoints[vertA].z);
             Vector3 pointB = new Vector3(x + cubepoints[vertB].x, y + cubepoints[vertB].y, z + cubepoints[vertB].z);
-            Vector3 point = (pointA + pointB)/2;
-            verticies.Add(point);
+
+            if (smooth_terrain) {
+                float densityA = densities[vertA];
+                float densityB = densities[vertB];
+
+                float percentage = (surface_level - densityA) / (densityB - densityA);
+                verticies.Add(pointA + (pointB - pointA) * percentage);
+            } else {
+                verticies.Add((pointA + pointB)/2f);
+            }
+
         }
         return verticies;
 
@@ -135,26 +160,8 @@ public class CubeMarch : MonoBehaviour {
         meshFilter.sharedMesh = mesh;
 
     }
-
-    public int TriangulationLookup(int x, int y, int z) { //return the 'case' number
-        string bin = "";
-
-        for (int i = 0; i < 8; i++) {
-            Vector3 vertex_pos = new Vector3(x + cubepoints[i].x, y + cubepoints[i].y, z + cubepoints[i].z);
-
-            if (density_map[(int)vertex_pos.z, (int)vertex_pos.y, (int)vertex_pos.x] >= surface_level) {
-                bin = "1" + bin;
-            } else {
-                bin = "0" + bin;
-            }
-        }
-
-        return System.Convert.ToInt32(bin, 2);
-    }
     
-
     
-    /*
     private void OnDrawGizmos() {
         if (!drawGizmo) { return; }
         if (density_map == null) { return;  }
@@ -171,7 +178,7 @@ public class CubeMarch : MonoBehaviour {
             }
         }
     }
-    */
+    
 
 
 
