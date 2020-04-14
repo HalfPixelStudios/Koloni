@@ -29,7 +29,11 @@ public class CubeMarch : MonoBehaviour {
 
     public GameObject chunks; //gameobject to act as parent of generated chunks
 
+    public int editor_pregen_size;
 
+    private void Start() {
+        clearChunks();
+    }
 
     void OnValidate() { //called when one variable is changed
         //clamp all values
@@ -40,15 +44,27 @@ public class CubeMarch : MonoBehaviour {
 
     public void GenerateInEditor() {
 
-        foreach (Transform child in chunks.transform) { //clear all loaded chunks
-            DestroyImmediate(child.gameObject);
-        }
+        clearChunks();
 
-        for (int j = -1; j <= 1; j++) {
-            for (int i = -1; i <= 1; i++) {
+        for (int j = -(editor_pregen_size-1); j <= (editor_pregen_size-1); j++) {
+            for (int i = -(editor_pregen_size-1); i <= (editor_pregen_size-1); i++) {
                 GameObject meshObject = GenerateChunk(new Vector2(i, j)*chunkSize);
                 meshObject.transform.parent = chunks.transform;
             }
+        }
+    }
+
+    public void clearChunks() {
+        List<GameObject> children = new List<GameObject>();
+        foreach (Transform child in chunks.transform) { //clear all loaded chunks
+
+            children.Add(child.gameObject);
+        }
+
+        while (children.Count > 0) {
+            GameObject first = children[0];
+            DestroyImmediate(first);
+            children.RemoveAt(0);
         }
     }
 
@@ -95,22 +111,24 @@ public class CubeMarch : MonoBehaviour {
         int[] triangles = new int[verticies.Length];
         Color[] colors = new Color[verticies.Length];
 
-        float minHeight = float.MaxValue;
-        float maxHeight = float.MinValue;
+        //float minHeight = float.MaxValue;
+        //float maxHeight = float.MinValue;
         for (int i = 0; i < verticies.Length; i++) {
             triangles[i] = i; //assign triangle data
 
             //find min and maxheights
             float height = verticies[i].y;
 
-            if (height < minHeight) { minHeight = height; }
-            if (height > maxHeight) { maxHeight = height; }
+            //if (height < minHeight) { minHeight = height; }
+            //if (height > maxHeight) { maxHeight = height; }
         }
 
         //Color each vertex based on its y position
         for (int i = 0; i < verticies.Length; i++) {
             float height = verticies[i].y;
-            colors[i] = terrain_gradient.Evaluate(Mathf.InverseLerp(minHeight,maxHeight,height));
+            //colors[i] = terrain_gradient.Evaluate(Mathf.InverseLerp(minHeight,maxHeight,height));
+            float maxHeight = Noise.maxPossibleHeight(chunkHeight,noiseWeight,octaves,persistence);
+            colors[i] = terrain_gradient.Evaluate(Mathf.InverseLerp(0, maxHeight, height));
         }
 
 

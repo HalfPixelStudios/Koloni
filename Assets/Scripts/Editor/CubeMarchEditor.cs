@@ -10,11 +10,11 @@ public class CubeMarchEditor : Editor {
         CubeMarch cm = (CubeMarch)target;
 
         if(DrawDefaultInspector()) {
-            //cm.GenerateInEditor();
+            cm.GenerateInEditor();
         }
 
         if (GUILayout.Button("Generate")) {
-            //cm.GenerateInEditor();
+            cm.GenerateInEditor();
         }
     }
 }
