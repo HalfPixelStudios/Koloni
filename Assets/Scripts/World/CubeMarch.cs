@@ -71,7 +71,7 @@ public class CubeMarch : MonoBehaviour {
     public GameObject GenerateChunk(Vector2 pos) {
         //Generate density map from noise 
         Vector3 center = new Vector3(pos.x, 0, pos.y);
-        float[,,] density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, noiseOffset + center, noiseScale, noiseWeight, octaves, persistence, lacunarity);
+        float[,,] density_map = NoiseGenerator.GenerateNoiseMap(seed, chunkSize, chunkHeight, noiseOffset + center, noiseScale, noiseWeight, octaves, persistence, lacunarity);
 
         //Create new Object
         GameObject meshObject = new GameObject();
@@ -127,7 +127,7 @@ public class CubeMarch : MonoBehaviour {
         for (int i = 0; i < verticies.Length; i++) {
             float height = verticies[i].y;
             //colors[i] = terrain_gradient.Evaluate(Mathf.InverseLerp(minHeight,maxHeight,height));
-            float maxHeight = Noise.maxPossibleHeight(chunkHeight,noiseWeight,octaves,persistence);
+            float maxHeight = NoiseGenerator.maxPossibleHeight(chunkHeight,noiseWeight,octaves,persistence);
             colors[i] = terrain_gradient.Evaluate(Mathf.InverseLerp(0, maxHeight, height));
         }
 
