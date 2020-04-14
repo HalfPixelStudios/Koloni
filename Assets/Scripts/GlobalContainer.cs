@@ -6,6 +6,7 @@ using UnityEngine;
 public class GlobalContainer : MonoBehaviour
 {
     [SerializeField] public GameObject floor;
+    public CubeMarch mapGenerator;
     
     // Start is called before the first frame update
     public static GlobalContainer Global;
