@@ -285,7 +285,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 2.75508e-40, y: -1.14e-43, z: -1.49e-43, w: 1e-45}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 1.83672e-40, w: -3.11e-43}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -371,9 +371,9 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   smooth_terrain: 0
-  chunkSize: 64
+  chunkSize: 32
   chunkHeight: 20
-  surface_level: 0.01
+  surface_level: 0.4
   chunks: {fileID: 1615427415}
 --- !u!4 &780470807
 Transform:
@@ -401,7 +401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecac6e00c3eca064292aea7a685b4018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  view_distance: 50
+  view_distance: 30
   viewer: {fileID: 310498552}
 --- !u!1 &963194225
 GameObject:
