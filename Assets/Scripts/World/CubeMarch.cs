@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using static GlobalContainer;
+
 public class CubeMarch : MonoBehaviour {
 
     public int seed;
@@ -25,6 +27,9 @@ public class CubeMarch : MonoBehaviour {
         new Vector3(0,1,0),new Vector3(0,1,1),new Vector3(1,1,1),new Vector3(1,1,0)
     };
 
+    public GameObject chunks; //gameobject to act as parent of generated chunks
+
+
     void OnValidate() { //called when one variable is changed
         //clamp all values
         if (noiseScale <= 0) { noiseScale = 0.0001f; }
@@ -32,10 +37,24 @@ public class CubeMarch : MonoBehaviour {
         if (octaves < 0) { octaves = 0; }
     }
 
+    public void GenerateInEditor() {
+
+        foreach (Transform child in chunks.transform) { //clear all loaded chunks
+            DestroyImmediate(child.gameObject);
+        }
+
+        for (int j = -1; j <= 1; j++) {
+            for (int i = -1; i <= 1; i++) {
+                GameObject meshObject = GenerateChunk(new Vector2(i, j)*chunkSize);
+                meshObject.transform.parent = chunks.transform;
+            }
+        }
+    }
 
     public GameObject GenerateChunk(Vector2 pos) {
         //Generate density map from noise 
-        float[,,] density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, noiseOffset, pos, noiseScale, noiseWeight, octaves, persistence, lacunarity);
+        Vector3 center = new Vector3(pos.x, 0, pos.y);
+        float[,,] density_map = Noise.GenerateNoiseMap(seed, chunkSize, chunkHeight, noiseOffset + center, noiseScale, noiseWeight, octaves, persistence, lacunarity);
 
         //Create new Object
         GameObject meshObject = new GameObject();
@@ -49,8 +68,8 @@ public class CubeMarch : MonoBehaviour {
         meshFilter.sharedMesh = mesh;
         meshRenderer.sharedMaterial = terrainMaterial;
 
-        meshObject.transform.position = new Vector3(pos.x,0,pos.y);
-        
+        meshObject.transform.position = new Vector3(pos.x-chunkSize/2f,0,pos.y-chunkSize/2f);
+        meshObject.transform.parent = chunks.transform;
         return meshObject;
         
     }
