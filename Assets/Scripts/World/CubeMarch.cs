@@ -30,6 +30,7 @@ public class CubeMarch : MonoBehaviour {
     public GameObject chunks; //gameobject to act as parent of generated chunks
 
 
+
     void OnValidate() { //called when one variable is changed
         //clamp all values
         if (noiseScale <= 0) { noiseScale = 0.0001f; }

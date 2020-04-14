@@ -5,6 +5,7 @@ using static GlobalContainer;
 
 public class ChunkLoader : MonoBehaviour {
 
+    public int pregen_size; //pregenerate some chunks
     [Range(1,300)] public float view_distance;
     public GameObject viewer;
 
@@ -17,14 +18,17 @@ public class ChunkLoader : MonoBehaviour {
     void Start() {
         chunkSize = Global.mapGenerator.chunkSize;
         visible_chunks = Mathf.RoundToInt(view_distance / chunkSize);
+
+        //pregenerate some chunks
+        UpdateVisibleChunks(pregen_size);
     }
 
     void Update() {
         viewer_pos = new Vector2(viewer.transform.position.x,viewer.transform.position.z);
-        UpdateVisibleChunks();
+        UpdateVisibleChunks(visible_chunks);
     }
 
-    void UpdateVisibleChunks() {
+    void UpdateVisibleChunks(int updatedistance) {
 
         //Reset all chunks
         foreach (TerrainChunk chunk in loaded) {
@@ -33,8 +37,8 @@ public class ChunkLoader : MonoBehaviour {
         loaded.Clear();
 
         Vector2 viewerChunkCoord = new Vector2(Mathf.RoundToInt(viewer_pos.x/chunkSize), Mathf.RoundToInt(viewer_pos.y / chunkSize));
-        for (int j = -visible_chunks; j <= visible_chunks; j++) {
-            for (int i = -visible_chunks; i <= visible_chunks; i++) {
+        for (int j = -updatedistance; j <= updatedistance; j++) {
+            for (int i = -updatedistance; i <= updatedistance; i++) {
                 Vector2 newChunkPos = new Vector2((int)(viewerChunkCoord.x+i),(int)(viewerChunkCoord.y+j));
 
                 if (loaded_chunks.ContainsKey(newChunkPos)) { //if the chunk has already been generated
