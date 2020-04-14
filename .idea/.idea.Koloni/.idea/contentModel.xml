@@ -11,11 +11,16 @@
         </e>
         <e p="PlayerAI.cs" t="Include" />
         <e p="Scripts" t="Include">
+          <e p="Build.cs" t="Include" />
           <e p="CameraController.cs" t="Include" />
           <e p="GlobalContainer.cs" t="Include" />
           <e p="World" t="Include">
+            <e p="Compute" t="Include">
+              <e p="Sample.compute" t="Include" />
+            </e>
             <e p="CubeMarch.cs" t="Include" />
             <e p="Noise.cs" t="Include" />
+            <e p="Triangulation.cs" t="Include" />
           </e>
         </e>
       </e>
