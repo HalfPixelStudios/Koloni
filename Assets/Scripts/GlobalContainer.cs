@@ -10,6 +10,7 @@ public class GlobalContainer : MonoBehaviour
     
     // Start is called before the first frame update
     public static GlobalContainer Global;
+    public GameObject selector;
 
     private void Awake()
     {
@@ -27,5 +28,19 @@ public class GlobalContainer : MonoBehaviour
         return val <= r && l <= val;
 
 
+    }
+
+    public static bool checkFloorClick(out RaycastHit hit)
+    {
+        if (Input.GetMouseButtonDown(0)) {
+            
+
+            return Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100) 
+                   && hit.collider.name.Equals("Floor");
+
+        }
+
+        hit = new RaycastHit();
+        return false;
     }
 }
